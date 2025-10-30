@@ -5,12 +5,21 @@ export const getExperiences = async (searchText?: string) => {
   if (searchText) {
     url += `?q=${searchText}`;
   }
-  const res = await fetch(url, {
-    cache: "no-store",
-  });
+  const res = await fetch(url, { cache: "no-store" });
 
   if (!res.ok) throw new Error("Failed to fetch experiences");
 
   const data = await res.json();
   return data.data as Experience[];
 };
+
+export async function getExperience(id: string): Promise<Experience> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/experiences/${id}`
+  );
+  if (!res.ok) throw new Error("Failed to fetch experiences");
+
+  const data = await res.json();
+
+  return data.data as Experience;
+}
