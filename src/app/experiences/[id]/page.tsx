@@ -4,13 +4,25 @@ import Image from "next/image";
 import { Experience } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { getExperience } from "@/services/experience.service";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 export default function Details() {
   const { id } = useParams();
+  const router = useRouter();
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [experience, setExperiences] = useState<Experience | null | undefined>(
     undefined
   );
+
+  const handleCheckout = () => {
+    const slotId = experience?.slots?.find(
+      (s) => s.date === date && s.time === time
+    )?._id;
+    if (slotId && id) {
+      router.push(`/checkout/?experience=${id}&slot=${slotId}`);
+    }
+  };
 
   useEffect(() => {
     const loadExperience = async (id: string) => {
@@ -18,7 +30,11 @@ export default function Details() {
         const data = await getExperience(id);
 
         setExperiences(data || null);
+        if (data?.slots?.length) {
+          setDate(data.slots[0].date);
+        }
       } catch (error) {
+        setExperiences(null);
         console.error("Error fetching details:", error);
       }
     };
@@ -59,32 +75,43 @@ export default function Details() {
             <h4 className="font-medium">Choose date</h4>
             <div className="flex gap-2 mt-2 flex-wrap">
               {dates.map((d) => (
-                <Link
+                <button
                   key={d}
-                  href={`/experiences/${id}?date=${d}`}
-                  className="px-3 py-2 rounded border bg-gray-50 text-sm"
+                  onClick={() => {
+                    setDate(d);
+                    setTime("");
+                  }}
+                  className={`px-3 py-2 rounded border bg-gray-50 text-sm ${
+                    d === date ? "bg-yellow-300" : ""
+                  }`}
                 >
                   {d}
-                </Link>
+                </button>
               ))}
             </div>
 
             <h4 className="font-medium mt-4">Available times</h4>
             <div className="flex gap-2 mt-2 flex-wrap">
-              {(experience?.slots || []).map((slot) => (
-                <Link
-                  key={slot._id}
-                  href={`/checkout?experience=${id}&slot=${slot._id}`}
-                  className={`px-3 py-2 rounded border text-sm ${
-                    slot.bookedCount >= slot.capacity
-                      ? "bg-gray-200 cursor-not-allowed"
-                      : "bg-gray-50"
-                  }`}
-                >
-                  {slot.time}{" "}
-                  {slot.bookedCount >= slot.capacity ? " (Sold)" : ""}
-                </Link>
-              ))}
+              {(experience?.slots || [])
+                .filter((s) => s.date === date)
+                .map((slot) => (
+                  <button
+                    key={slot._id}
+                    onClick={() => {
+                      setTime(slot.time);
+                    }}
+                    className={`px-3 py-2 rounded border text-sm ${
+                      slot.bookedCount >= slot.capacity
+                        ? "bg-gray-200 cursor-not-allowed"
+                        : "bg-gray-50"
+                    }
+                  ${slot.time === time ? "bg-yellow-300" : ""}
+                  `}
+                  >
+                    {slot.time}{" "}
+                    {slot.bookedCount >= slot.capacity ? " (Sold)" : ""}
+                  </button>
+                ))}
             </div>
           </div>
         </div>
@@ -96,11 +123,14 @@ export default function Details() {
               <span className="font-bold">₹{experience?.price}</span>
             </div>
             <p className="text-xs text-gray-500">Includes gear and guide</p>
-            <Link href={`/checkout?experience=${id}`} className="mt-4">
-              <button className="w-full bg-brand px-4 py-2 rounded">
-                Book Now
-              </button>
-            </Link>
+            {/* <Link href={`/checkout?experience=${id}`} className="mt-4"> */}
+            <button
+              className="w-full bg-brand px-4 py-2 rounded"
+              onClick={handleCheckout}
+            >
+              Book Now
+            </button>
+            {/* </Link> */}
           </div>
         </aside>
       </div>
