@@ -1,18 +1,17 @@
 "use client";
 import ExperienceCard from "@/components/ExeprienceCard";
 import { Experience } from "../lib/types";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getExperiences } from "@/services/experience.service";
-import { UserContext } from "@/providers";
-import useDebounce from "@/Hooks/useDebounce";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
-  const { search } = useContext(UserContext);
   const [experiences, setExperiences] = useState<Experience[] | null>(null);
-  const debouncedQuery = useDebounce(search || "", 500);
+  const searchParams = useSearchParams();
+  const q = searchParams.get("q");
 
   useEffect(() => {
-    const loadExperiences = async (q: string) => {
+    const loadExperiences = async (q?: string | null) => {
       try {
         const data = await getExperiences(q);
         setExperiences(data || []);
@@ -21,8 +20,8 @@ export default function Home() {
       }
     };
 
-    loadExperiences(debouncedQuery);
-  }, [debouncedQuery]);
+    loadExperiences(q);
+  }, [q]);
 
   return (
     <div className="max-w-6xl mx-auto p-6">
