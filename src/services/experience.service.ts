@@ -1,6 +1,6 @@
 import { Experience } from "@/lib/types";
 
-export const getExperiences = async (searchText?: string) => {
+export const getExperiences = async (searchText?: string | null) => {
   let url = `${process.env.NEXT_PUBLIC_API_URL}/experiences`;
   if (searchText) {
     url += `?q=${searchText}`;
