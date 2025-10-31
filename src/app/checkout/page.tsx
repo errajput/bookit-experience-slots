@@ -1,11 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import API from "@/lib/api";
 import { Experience, Slot, BookingPayload } from "@/lib/types";
 import { AxiosError } from "axios";
 import { FaArrowLeft } from "react-icons/fa6";
-import { formatDate } from "@/utils/formatDate";
+import { formatTime } from "@/utils/formatTime";
+import {
+  bookExperience,
+  getExperience,
+  validatePromo,
+} from "@/services/experience.service";
 
 export default function CheckoutPage() {
   const search = useSearchParams();
@@ -18,8 +22,7 @@ export default function CheckoutPage() {
   const [slot, setSlot] = useState<Slot | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const qtyFromParams = Number(search.get("qty")) || 1;
-  const [qty, setQty] = useState(qtyFromParams);
+  const [qty, setQty] = useState(1);
   const [subtotal, setSubtotal] = useState(0);
   const [taxes, setTaxes] = useState(0);
   const [total, setTotal] = useState(0);
@@ -32,10 +35,10 @@ export default function CheckoutPage() {
 
   // Load from localStorage
   useEffect(() => {
-    const stored = localStorage.getItem("checkoutData");
+    const stored = sessionStorage.getItem("checkoutData");
     if (stored) {
       const data = JSON.parse(stored);
-      setQty(data.qty);
+      setQty(data.quantity);
       setSubtotal(data.subtotal);
       setTaxes(data.taxes);
       setTotal(data.total);
@@ -49,10 +52,7 @@ export default function CheckoutPage() {
     async function load() {
       if (!experienceId) return;
       try {
-        const res = await API.get<{ data: Experience }>(
-          `/experiences/${experienceId}`
-        );
-        const data = res.data.data;
+        const data = await getExperience(experienceId);
         setExperience(data);
 
         if (slotId) {
@@ -74,13 +74,10 @@ export default function CheckoutPage() {
     if (!promo) return;
 
     try {
-      const res = await API.post<{ valid: boolean; discount: number }>(
-        "/promo/validate",
-        { code: promo }
-      );
+      const data = await validatePromo(promo);
 
-      if (res.data.valid) {
-        setPromoValid(res.data.discount ?? 0);
+      if (data.valid) {
+        setPromoValid(data.discount ?? 0);
         setError(null);
       } else {
         setPromoValid(null);
@@ -120,15 +117,11 @@ export default function CheckoutPage() {
 
     setLoading(true);
     try {
-      const res = await API.post<{ data: { _id: string } }>(
-        "/bookings",
-        payload
-      );
-      const booking = res.data.data;
-      router.push(`/confirmation/${booking._id}`);
-    } catch (err: unknown) {
-      const error = err as AxiosError<{ error?: string }>;
-      setError(error.response?.data?.error || "Booking failed");
+      const booking = await bookExperience(payload);
+      router.push(`/confirmation?refId=${booking._id}`);
+    } catch (error) {
+      console.log("Error", error);
+      setError("Booking failed");
     } finally {
       setLoading(false);
     }
@@ -230,7 +223,7 @@ export default function CheckoutPage() {
             <div className="flex justify-between">
               <span>Time</span>
               <span className="text-[#161616]">
-                {formatDate(slot?.time || "—")}
+                {formatTime(slot?.time || "—")}
               </span>
             </div>
             <div className="flex justify-between items-center">

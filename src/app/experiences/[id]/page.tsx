@@ -24,7 +24,7 @@ export default function Details() {
     )?._id;
     if (slotId && id) {
       const checkoutData = { quantity, subtotal, taxes, total };
-      localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
+      sessionStorage.setItem("checkoutData", JSON.stringify(checkoutData));
       router.push(`/checkout/?experience=${id}&slot=${slotId}`);
     }
   };
@@ -60,7 +60,7 @@ export default function Details() {
   const price = experience.price || 0;
   const taxes = Math.round(price * 0.059);
   const subtotal = price * quantity;
-  const total = subtotal - taxes;
+  const total = subtotal + taxes;
 
   const handleIncrement = () => {
     if (quantity < 6) setQuantity(quantity + 1);
