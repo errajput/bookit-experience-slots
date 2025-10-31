@@ -1,5 +1,5 @@
 import "./globals.css";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import Navbar from "../components/Navbar";
 
 export const metadata = {
@@ -10,7 +10,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <Navbar />
+        <Suspense fallback={null}>
+          <Navbar />
+        </Suspense>
         <main className="min-h-screen">{children}</main>
       </body>
     </html>
