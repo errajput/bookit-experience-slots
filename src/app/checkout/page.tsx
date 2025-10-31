@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Experience, Slot, BookingPayload } from "@/lib/types";
-import { AxiosError } from "axios";
 import { FaArrowLeft } from "react-icons/fa6";
 import { formatTime } from "@/utils/formatTime";
 import {
@@ -60,8 +59,7 @@ export default function CheckoutPage() {
           setSlot(s || null);
         }
       } catch (err: unknown) {
-        const error = err as AxiosError;
-        console.error("Error loading experience:", error);
+        console.error("Error loading experience:", err);
       }
     }
     load();
