@@ -38,16 +38,16 @@ export default function Navbar() {
           height={55}
           className="object-cover"
         />
-        <div className="flex items-center gap-3">
+        <div className=" sm:flex items-center gap-3">
           <input
             placeholder="Search experiences"
-            className="bg-[#EDEDED] text-[#727272] rounded px-3 py-2 text-[14px] w-[340px]"
+            className="bg-[#EDEDED] text-[#727272] rounded px-3 py-2 text-[14px] w-[140px] md:w-[340px] focus:outline-none"
             id="global-search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button
-            className="bg-brand w-[87px] h-[42px] px-3 py-2 rounded-lg text-[#161616] bg-[#FFD643] text-[14px] font-medium cursor-pointer"
+            className="bg-brand w-[87px]  h-[42px] px-3 py-2 rounded-lg text-[#161616] bg-[#FFD643] text-[14px] font-medium cursor-pointer"
             onClick={handleSearch}
           >
             Search

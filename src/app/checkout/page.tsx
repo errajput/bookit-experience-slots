@@ -138,62 +138,57 @@ export default function CheckoutPage() {
   // JSX
   // ==========================
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Back Button */}
       <button
         onClick={() => router.back()}
-        className="p-3 flex items-center gap-2 text-black hover:text-black transition cursor-pointer"
+        className="flex items-center gap-2 text-black hover:text-gray-700 transition mb-4"
       >
         <FaArrowLeft size={18} />
-        <span className="text-sm font-medium">Checkout</span>
+        <span className="text-sm sm:text-base font-medium">Checkout</span>
       </button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* LEFT SECTION */}
-        <div className="lg:col-span-2 h-[200px] bg-[#EFEFEF] p-5 rounded-xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="lg:col-span-2 bg-[#EFEFEF] p-5 sm:p-6 rounded-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* NAME */}
             <div>
-              <label className="block text-[14px] font-regular text-[#5B5B5B]">
-                Full name
-              </label>
+              <label className="block text-sm text-[#5B5B5B]">Full name</label>
               <input
                 type="text"
                 placeholder="Your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 w-full h-[42px]  rounded-md p-3 text-[14px] bg-[#DDDDDD] text-[#727272] focus:outline-none"
+                className="mt-1 w-full h-[42px] rounded-md p-3 text-sm bg-[#DDDDDD] text-[#727272] focus:outline-none"
               />
             </div>
-
             {/* EMAIL */}
             <div>
-              <label className="block text-[14px] font-regular text-[#5B5B5B]">
-                Email
-              </label>
+              <label className="block text-sm text-[#5B5B5B]">Email</label>
               <input
                 type="email"
                 placeholder="Your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full h-[42px] rounded-md p-3 text-[14px] bg-[#DDDDDD] text-[#727272] focus:outline-none"
+                className="mt-1 w-full h-[42px] rounded-md p-3 text-sm bg-[#DDDDDD] text-[#727272] focus:outline-none"
               />
             </div>
           </div>
 
           {/* PROMO CODE */}
-          <div className="mt-3">
-            <div className="flex gap-3 mt-1">
+          <div className="mt-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="text"
                 placeholder="Promo code"
                 value={promo}
                 onChange={(e) => setPromo(e.target.value)}
-                className="flex-1 h-[42px] rounded-md p-3 text-[14px] bg-[#DDDDDD] text-[#727272] focus:outline-none"
+                className="flex-1 h-[42px] rounded-md p-3 text-sm bg-[#DDDDDD] text-[#727272] focus:outline-none"
               />
               <button
                 onClick={applyPromo}
-                className="cursor-pointer w-[71px] bg-[#161616] text-white px-3 text-[14px] rounded-lg hover:bg-gray-800 transition"
+                className="w-full sm:w-[90px] bg-[#161616] text-white text-sm rounded-md py-2 hover:bg-gray-800 transition"
               >
                 Apply
               </button>
@@ -208,50 +203,44 @@ export default function CheckoutPage() {
           </div>
 
           {/* TERMS */}
-          <div className="mt-3 flex items-center gap-2">
+          <div className="mt-4 flex items-start sm:items-center gap-2">
             <input
               type="checkbox"
               checked={agree}
               onChange={(e) => setAgree(e.target.checked)}
-              className="cursor-pointer"
+              className="cursor-pointer mt-1 sm:mt-0"
             />
-            <label className="text-[12px] text-[#5B5B5B]">
+            <label className="text-xs sm:text-sm text-[#5B5B5B]">
               I agree to the terms and safety policy
             </label>
           </div>
         </div>
 
         {/* RIGHT SIDEBAR */}
-        <aside className="bg-[#EFEFEF] p-6 rounded-xl h-[349px]">
+        <aside className="bg-[#EFEFEF] p-5 sm:p-6 rounded-xl h-auto lg:h-[349px]">
           <div className="space-y-3 text-sm text-[#656565]">
             <div className="flex justify-between">
               <span>Experience</span>
               <span className="text-[#161616]">{experience?.title || "—"}</span>
             </div>
-
             <div className="flex justify-between">
               <span>Date</span>
               <span className="text-[#161616]">{slot?.date || "—"}</span>
             </div>
-
             <div className="flex justify-between">
               <span>Time</span>
               <span className="text-[#161616]">
                 {formatDate(slot?.time || "—")}
               </span>
             </div>
-
             <div className="flex justify-between items-center">
               <span>Qty</span>
-
               <span className="px-2 text-[#161616]">{qty}</span>
             </div>
-
             <div className="flex justify-between">
               <span>Subtotal</span>
               <span className="text-[#161616]">₹{subtotal}</span>
             </div>
-
             <div className="flex justify-between">
               <span>Taxes</span>
               <span className="text-[#161616]">₹{taxes}</span>
@@ -266,7 +255,7 @@ export default function CheckoutPage() {
 
             <hr className="border-[#ddd]" />
 
-            <div className="flex justify-between font-medium text-[18px] text-[#161616]">
+            <div className="flex justify-between font-medium text-base sm:text-lg text-[#161616]">
               <span>Total</span>
               <span>₹{total}</span>
             </div>
@@ -274,7 +263,7 @@ export default function CheckoutPage() {
             <button
               onClick={submitBooking}
               disabled={loading}
-              className={` cursor-pointer w-full mt-4 py-2 rounded-md text-black font-medium transition ${
+              className={`cursor-pointer w-full mt-4 py-2 rounded-md font-medium transition text-black ${
                 loading
                   ? "bg-yellow-300 opacity-70 cursor-not-allowed"
                   : "bg-yellow-400 hover:bg-yellow-500"
